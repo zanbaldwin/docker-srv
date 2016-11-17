@@ -1,0 +1,57 @@
+version: '2'
+services:
+
+    mysql:
+        container_name: mysql
+        image: mysql:8.0.0
+        restart: unless-stopped
+        volumes:
+            - /var/lib/mysql:/var/lib/mysql
+            - /etc/mysql:/etc/mysql/conf.d
+        ports:
+            - 3306:3306
+        environment:
+            - MYSQL_RANDOM_ROOT_PASSWORD=yes
+
+    neo4j:
+        container_name: neo4j
+        image: neo4j:3.0.7
+        restart: unless-stopped
+        volumes:
+            - /var/lib/neo4j:/data
+        ports:
+            - 7474:7474
+            - 7687:7687
+
+    redis:
+        container_name: redis
+        image: redis:3.2.5-alpine
+        restart: unless-stopped
+        volumes:
+            - /var/lib/redis:/data
+        ports:
+            - 6379:6379
+
+    nginx:
+        container_name: nginx
+        image: nginx:1.11.5-alpine
+        restart: unless-stopped
+        volumes:
+            - ./sites-generated:/etc/nginx/conf.d:ro
+            - /etc/letsencrypt:/etc/letsencrypt:ro
+            - /etc/ssl:/etc/ssl:ro
+        ports:
+            - 80:80
+            - 443:443
+
+    nginx-gen:
+        container_name: nginx-gen
+        image: jwilder/docker-gen:0.7.3
+        restart: unless-stopped
+        volumes:
+            - ./templates:/etc/docker-gen/templates:ro
+            - ./sites-generated:/etc/docker-gen/output
+            - /var/run/docker.sock:/tmp/docker.sock:ro
+        command: -notify-sighup nginx -watch -only-exposed /etc/docker-gen/templates/nginx.tmpl /etc/docker-gen/output/containers.conf
+        depends_on:
+            - nginx
