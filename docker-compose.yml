@@ -11,7 +11,7 @@ services:
         ports:
             - 3306:3306
         environment:
-            - MYSQL_RANDOM_ROOT_PASSWORD=yes
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
 
     neo4j:
         container_name: neo4j
@@ -40,6 +40,7 @@ services:
             - ./sites-generated:/etc/nginx/conf.d:ro
             - /etc/letsencrypt:/etc/letsencrypt:ro
             - /etc/ssl:/etc/ssl:ro
+            - /srv/data:/srv/data:ro
         ports:
             - 80:80
             - 443:443

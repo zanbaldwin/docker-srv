@@ -82,13 +82,41 @@ server {
         ssl_certificate /etc/letsencrypt/live/{{ $host }}/fullchain.pem;
         ssl_certificate_key /etc/letsencrypt/live/{{ $host }}/privkey.pem;
 
-        location / {
-            proxy_pass http://{{ trim $host }};
-            proxy_set_header Host $http_host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
+        location ~/\.ht {
+            deny all;
         }
+
+        {{ range $index, $value := $containers }}
+            {{ if $value.Env.DOCUMENT_ROOT }}
+                root {{ $value.Env.DOCUMENT_ROOT }}/public;
+                index index.php index.html index.htm;
+
+                location / {
+                    try_files $uri $uri/ /index.php$is_args$args =404;
+                }
+                location ~ [^/]\.php(/|\?|$) {
+                    fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+                    if (!-f $document_root$fastcgi_script_name) {
+                        return 404;
+                    }
+                    try_files $uri $fastcgi_script_name =404;
+                    fastcgi_index index.php;
+                    fastcgi_param SCRIPT_FILENAME /srv/public$fastcgi_script_name;
+                    include fastcgi_params;
+                    fastcgi_pass {{ trim $host }};
+                }
+            {{ else }}
+                # Proxy every request to the container.
+                location / {
+                    proxy_pass http://{{ trim $host }};
+                    proxy_set_header Host $http_host;
+                    proxy_set_header X-Real-IP $remote_addr;
+                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                    proxy_set_header X-Forwarded-Proto $scheme;
+                }
+            {{ end }}
+        {{ end }}
+
     }
 {{ end }}
 
