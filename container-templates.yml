@@ -1,0 +1,28 @@
+version: '2'
+services:
+
+    php:
+        image: "darsyn/php:1.0.0"
+        build: "./images/php"
+        restart: unless-stopped
+        ports: [ "9000" ]
+        environment:
+            VIRTUAL_PORT: 9000
+
+    webserver:
+        image: "darsyn/webserver:1.0.0"
+        build: "./images/webserver"
+        restart: unless-stopped
+        ports: [ "80" ]
+        environment:
+            VIRTUAL_PORT: 80
+
+    osenv:
+        image: "darsyn/osenv:1.0.0"
+        build: "./images/osenv"
+        restart: unless-stopped
+        ports: [ "22" ]
+        links: [ mysql ]
+        tmpfs: [ "/run" ]
+        volumes:
+            - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
