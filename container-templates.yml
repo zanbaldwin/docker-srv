@@ -2,7 +2,7 @@ version: '2'
 services:
 
     php:
-        image: "darsyn/php:1.0.0"
+        image: "darsyn/php:1.0.2"
         build: "./images/php"
         restart: unless-stopped
         ports: [ "9000" ]
@@ -10,7 +10,7 @@ services:
             VIRTUAL_PORT: 9000
 
     webserver:
-        image: "darsyn/webserver:1.0.0"
+        image: "darsyn/webserver:1.0.2"
         build: "./images/webserver"
         restart: unless-stopped
         ports: [ "80" ]
@@ -18,7 +18,7 @@ services:
             VIRTUAL_PORT: 80
 
     osenv:
-        image: "darsyn/osenv:1.0.0"
+        image: "darsyn/osenv:1.0.2"
         build: "./images/osenv"
         restart: unless-stopped
         ports: [ "22" ]
