@@ -6,8 +6,14 @@ services:
         build: "./images/php"
         restart: unless-stopped
         ports: [ "9000" ]
+
+    server:
+        image: darsyn/server:2.0.0
+        build: "./images/server"
+        restart: unless-stopped
+        ports: [ "80" ]
         environment:
-            VIRTUAL_PORT: 9000
+            VIRTUAL_PORT: 80
 
     webserver:
         image: "darsyn/webserver:2.0.0"
