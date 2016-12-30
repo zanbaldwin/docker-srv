@@ -4,6 +4,7 @@ MAINTAINER Zanna Baldwin <hello@zannabaldwin.com>
 ENV TERM xterm
 ENV NOTVISIBLE "in users profile"
 EXPOSE 22
+WORKDIR /srv
 
 RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && git clone git://github.com/Yelp/dumb-init.git /tmp/dumb-init \

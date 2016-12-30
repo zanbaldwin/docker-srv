@@ -19,5 +19,3 @@ services:
         image: "darsyn/osenv:3.0.0"
         build: "./images/osenv"
         restart: unless-stopped
-        ports: [ "22" ]
-        links: [ mysql ]
