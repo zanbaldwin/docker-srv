@@ -14,3 +14,4 @@ RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && apk del .build-deps \
     && chmod +x /usr/local/bin/dumb-init
 ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
+CMD [ "nginx", "-g", "daemon off;" ]
