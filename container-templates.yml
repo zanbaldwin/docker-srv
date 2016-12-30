@@ -21,6 +21,3 @@ services:
         restart: unless-stopped
         ports: [ "22" ]
         links: [ mysql ]
-        tmpfs: [ "/run" ]
-        volumes:
-            - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
