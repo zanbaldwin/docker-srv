@@ -1,4 +1,4 @@
-FROM darsyn/php:1.0.3
+FROM darsyn/php:2.0.0
 MAINTAINER Zander Baldwin "hello@zanderbaldwin.com"
 EXPOSE 80
 WORKDIR /srv
