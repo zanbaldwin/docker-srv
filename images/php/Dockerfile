@@ -3,27 +3,29 @@ MAINTAINER Zander Baldwin "hello@zanderbaldwin.com"
 EXPOSE 9000
 WORKDIR /srv
 
+COPY zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 RUN apk add --no-cache libpng-dev gmp-dev icu-dev libmcrypt-dev sqlite-dev libxml2-dev libxslt-dev sed
-RUN docker-php-ext-install bcmath
-RUN docker-php-ext-install dba
-RUN docker-php-ext-install gd
-RUN docker-php-ext-install gmp
-RUN docker-php-ext-install hash
-RUN docker-php-ext-install intl
-RUN docker-php-ext-install json
-RUN docker-php-ext-install mbstring
-RUN docker-php-ext-install mcrypt
-RUN docker-php-ext-install mysqli
-RUN docker-php-ext-install opcache
-RUN docker-php-ext-install pdo
-RUN docker-php-ext-install pdo_mysql
-RUN docker-php-ext-install pdo_sqlite
-RUN docker-php-ext-install session
-RUN docker-php-ext-install simplexml
-RUN docker-php-ext-install sockets
-RUN docker-php-ext-install xml
-RUN docker-php-ext-install xsl
-RUN docker-php-ext-install zip
+RUN docker-php-ext-install \
+    bcmath \
+    dba \
+    gd \
+    gmp \
+    hash \
+    intl \
+    json \
+    mbstring \
+    mcrypt \
+    mysqli \
+    opcache \
+    pdo \
+    pdo_mysql \
+    pdo_sqlite \
+    session \
+    simplexml \
+    sockets \
+    xml \
+    xsl \
+    zip
 
 RUN sed -i -e 's/www-data/root/g' /usr/local/etc/php-fpm.d/www.conf
 
