@@ -38,3 +38,4 @@ RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && chmod +x /usr/local/bin/dumb-init
 ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
 CMD [ "php-fpm", "--allow-to-run-as-root", "--nodaemonize" ]
+COPY php.ini /usr/local/etc/php/php.ini
