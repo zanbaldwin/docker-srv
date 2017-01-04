@@ -4,28 +4,33 @@ EXPOSE 9000
 WORKDIR /srv
 
 COPY zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
-RUN apk add --no-cache libpng-dev gmp-dev icu-dev libmcrypt-dev sqlite-dev libxml2-dev libxslt-dev sed
-RUN docker-php-ext-install \
-    bcmath \
-    dba \
-    gd \
-    gmp \
-    hash \
-    intl \
-    json \
-    mbstring \
-    mcrypt \
-    mysqli \
-    opcache \
-    pdo \
-    pdo_mysql \
-    pdo_sqlite \
-    session \
-    simplexml \
-    sockets \
-    xml \
-    xsl \
-    zip
+RUN apk add --no-cache \
+    libpng-dev libjpeg-turbo-dev libwebp-dev giflib-dev \
+    gmp-dev icu-dev libmcrypt-dev sqlite-dev libxml2-dev \
+    libxslt-dev sed
+RUN docker-php-ext-configure gd --with-jpeg-dir=/usr \
+    && docker-php-ext-install \
+        bcmath \
+        dba \
+        exif \
+        gd \
+        gmp \
+        hash \
+        intl \
+        json \
+        mbstring \
+        mcrypt \
+        mysqli \
+        opcache \
+        pdo \
+        pdo_mysql \
+        pdo_sqlite \
+        session \
+        simplexml \
+        sockets \
+        xml \
+        xsl \
+        zip
 
 RUN sed -i -e 's/www-data/root/g' /usr/local/etc/php-fpm.d/www.conf
 
