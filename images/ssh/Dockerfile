@@ -17,10 +17,9 @@ ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
 
 RUN apk add --no-cache bash bash-completion curl nano git openssh ncurses \
     && mkdir /var/run/sshd \
-    #&& sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd \
     && echo "export VISIBLE=now" >> /etc/profile \
-    && ssh-keygen -A \
-    && sed -i -e "s@/bin/ash@/bin/bash@g" /etc/passwd
+    && sed -i -e "s@/bin/ash@/bin/bash@g" /etc/passwd \
+    && ssh-keygen -A
 RUN git clone git://github.com/zanderbaldwin/dotfiles.git /tmp/.dotfiles \
     && curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o /etc/profile.d/00-git_prompt.sh \
     && mv /tmp/.dotfiles/.bash_aliases /etc/profile.d/10-bash_aliases.sh \

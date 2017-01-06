@@ -2,20 +2,20 @@ version: '2'
 services:
 
     php:
-        image: "darsyn/php:3.1.0"
+        image: "darsyn/php:3.2.0"
         build: "./images/php"
         restart: unless-stopped
         ports: [ "9000" ]
 
-    server:
-        image: "darsyn/server:3.1.0"
-        build: "./images/server"
+    web:
+        image: "darsyn/web:3.2.0"
+        build: "./images/web"
         restart: unless-stopped
         ports: [ "80" ]
         environment:
             VIRTUAL_PORT: 80
 
-    osenv:
-        image: "darsyn/osenv:3.1.0"
-        build: "./images/osenv"
+    ssh:
+        image: "darsyn/ssh:3.2.0"
+        build: "./images/ssh"
         restart: unless-stopped

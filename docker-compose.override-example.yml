@@ -1,0 +1,29 @@
+version: '2'
+services:
+
+    mywebsite-php:
+        extends:
+            file: container-templates.yml
+            service: php
+        links: [ "mysql", "redis", "neo4j" ]
+        volumes:
+            - "./data/mywebsite:/srv"
+    mywebsite-web:
+        extends:
+            file: container-templates.yml
+            service: web
+        volumes_from: [ "mywebsite-php" ]
+        environment:
+            VIRTUAL_HOST: "mywebsite.lo"
+        links: [ "mywebsite-php:php" ]
+        depends_on: [ "nginx" ]
+    mywebsite-ssh:
+        extends:
+            file: container-templates.yml
+            service: ssh
+        hostname: "mywebsite.lo"
+        ports: [ 22 ]
+        links: [ "mysql", "redis", "neo4j" ]
+        volumes_from: [ "mywebsite-php" ]
+        volumes:
+            - "./data/mywebsite.ssh:/root/.ssh:ro"
