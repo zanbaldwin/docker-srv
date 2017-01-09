@@ -89,7 +89,17 @@ server {
 
         # Proxy every request to the container.
         location / {
-            proxy_pass http://{{ trim $host }};
+            {{ $container := index $containers 0 }}
+            {{ if $container.Env.VIRTUAL_PORT }}
+                {{ if eq $container.Env.VIRTUAL_PORT "443" }}
+                    proxy_pass https://{{ trim $host }};
+                {{ else }}
+                    proxy_pass http://{{ trim $host }};
+                {{ end }}
+            {{ else }}
+                proxy_pass http://{{ trim $host }};
+            {{ end }}
+
             proxy_set_header Host $http_host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

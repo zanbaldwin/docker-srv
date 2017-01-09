@@ -34,6 +34,20 @@ RUN docker-php-ext-configure gd --with-jpeg-dir=/usr \
 
 RUN sed -i -e 's/www-data/root/g' /usr/local/etc/php-fpm.d/www.conf
 
+RUN apk add --no-cache --virtual .xdebug-deps autoconf gcc make \
+    && pecl install xdebug \
+    && apk del .xdebug-deps \
+    && touch /usr/local/etc/php/conf.d/xdebug.ini \
+    && ( \
+        echo ";zend_extension=xdebug.so"; \
+        echo "xdebug.remote_enable=1"; \
+        echo "xdebug.remote_handler=dbgp"; \
+        echo "xdebug.remote_port=9000"; \
+        echo "xdebug.remote_autostart=1"; \
+        echo "xdebug.remote_connect_back=1"; \
+        echo "xdebug.idekey=XDEBUG"; \
+    ) >> /usr/local/etc/php/conf.d/xdebug.ini
+
 RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && git clone git://github.com/Yelp/dumb-init.git /tmp/dumb-init \
     && (cd /tmp/dumb-init; git checkout $(git describe --tags); make) \
