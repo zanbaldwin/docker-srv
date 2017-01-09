@@ -18,7 +18,7 @@ services:
                 external_url                            "https://${GIT_DOMAIN}"
                 nginx['ssl_certificate']                = "/etc/letsencrypt/live/${GIT_DOMAIN}/fullchain.pem"
                 nginx['ssl_certificate_key']            = "/etc/letsencrypt/live/${GIT_DOMAIN}/privkey.pem"
-                gitlab_rails['gitlab_ssh_host']         = "darsyn.io"
+                gitlab_rails['gitlab_ssh_host']         = "${SSH_DOMAIN}"
                 registry_external_url                   "https://${REGISTRY_DOMAIN}"
                 registry_nginx['ssl_certificate']       = "/etc/letsencrypt/live/${REGISTRY_DOMAIN}/fullchain.pem"
                 registry_nginx['ssl_certificate_key']   = "/etc/letsencrypt/live/${REGISTRY_DOMAIN}/privkey.pem"
