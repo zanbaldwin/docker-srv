@@ -1,0 +1,37 @@
+version: '2'
+services:
+
+    gitlab:
+        image: gitlab/gitlab-ce:8.15.2-ce.0
+        container_name: gitlab
+        volumes:
+            - "/srv/data/gitlab/config:/etc/gitlab"
+            - "/srv/data/gitlab/logs:/var/log/gitlab"
+            - "/srv/data/gitlab/data:/var/opt/gitlab"
+            - "/etc/letsencrypt:/etc/letsencrypt:ro"
+        ports: [ "80", "22:22", "5000:5000" ]
+        environment:
+            VIRTUAL_HOST: ${GIT_DOMAIN},${REGISTRY_DOMAIN},${CHAT_DOMAIN}
+            VIRTUAL_PORT: 443
+            PROXY_SSL: 1
+            GITLAB_OMNIBUS_CONFIG: |
+                external_url                            "https://${GIT_DOMAIN}"
+                nginx['ssl_certificate']                = "/etc/letsencrypt/live/${GIT_DOMAIN}/fullchain.pem"
+                nginx['ssl_certificate_key']            = "/etc/letsencrypt/live/${GIT_DOMAIN}/privkey.pem"
+                gitlab_rails['gitlab_ssh_host']         = "darsyn.io"
+                registry_external_url                   "https://${REGISTRY_DOMAIN}"
+                registry_nginx['ssl_certificate']       = "/etc/letsencrypt/live/${REGISTRY_DOMAIN}/fullchain.pem"
+                registry_nginx['ssl_certificate_key']   = "/etc/letsencrypt/live/${REGISTRY_DOMAIN}/privkey.pem"
+                mattermost_external_url                 "https://${CHAT_DOMAIN}"
+                mattermost_nginx['ssl_certificate']     = "/etc/letsencrypt/live/${CHAT_DOMAIN}/fullchain.pem"
+                mattermost_nginx['ssl_certificate_key'] = "/etc/letsencrypt/live/${CHAT_DOMAIN}/privkey.pem"
+        hostname: ${GIT_DOMAIN}
+        restart: "unless-stopped"
+        depends_on: [ "nginx" ]
+    gitlab-runner:
+        image: gitlab/gitlab-runner:alpine-v1.9.1
+        volumes:
+            - "/var/run/docker.sock:/var/run/docker.sock"
+            - "/srv/data/gitlab/runner:/etc/gitlab-runner"
+        restart: unless-stopped
+        depends_on: [ "gitlab" ]
