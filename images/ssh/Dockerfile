@@ -1,10 +1,7 @@
 FROM alpine:3.5
-MAINTAINER Zanna Baldwin <hello@zannabaldwin.com>
-
-ENV TERM xterm
-ENV NOTVISIBLE "in users profile"
-EXPOSE 22
+MAINTAINER Zander Baldwin <hello@zanderbaldwin.com>
 WORKDIR /srv
+EXPOSE 22
 
 RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && git clone git://github.com/Yelp/dumb-init.git /tmp/dumb-init \
@@ -15,9 +12,10 @@ RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && chmod +x /usr/local/bin/dumb-init
 ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
 
+ENV TERM xterm
+
 RUN apk add --no-cache bash bash-completion curl nano git openssh ncurses \
     && mkdir /var/run/sshd \
-    && echo "export VISIBLE=now" >> /etc/profile \
     && sed -i -e "s@/bin/ash@/bin/bash@g" /etc/passwd \
     && ssh-keygen -A
 RUN git clone git://github.com/zanderbaldwin/dotfiles.git /tmp/.dotfiles \
