@@ -10,14 +10,12 @@ services:
             - "./sites-generated:/etc/nginx/conf.d:ro"
             - "/etc/letsencrypt:/etc/letsencrypt:ro"
             - "/etc/ssl:/etc/ssl:ro"
-            - "/srv/data:/srv:ro"
 
     nginx-gen:
         container_name: nginx-gen
         image: "jwilder/docker-gen:0.7.3"
         restart: unless-stopped
         command: "-notify-sighup nginx -watch -only-exposed /etc/docker-gen/templates/nginx.tmpl /etc/docker-gen/output/containers.conf"
-        depends_on: [ nginx ]
         volumes:
             - "./templates:/etc/docker-gen/templates:ro"
             - "./sites-generated:/etc/docker-gen/output"
