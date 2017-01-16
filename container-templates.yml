@@ -1,3 +1,6 @@
+# This file is so that image tags can be updated without having to update files
+# that are not under version control (such as docker-compose.override.yml).
+
 version: '2'
 services:
 
