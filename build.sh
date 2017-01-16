@@ -1,7 +1,8 @@
 #!/bin/bash
 
+# Use this if you wish to prefix the image name with something.
+# E.g. "registry.gitlab.com/" to result in images like "registry.gitlab.com/vendor/image:tag".
 IMAGE_PREFIX=${IMAGE_PREFIX:-}
-IMAGE_TAG_SUFFIX=${IMAGE_TAG_SUFFIX:-}
 
 DOCKER=$(which docker)
 if [ $? -ne 0 ]; then
@@ -11,7 +12,7 @@ fi
 
 INFO=$($DOCKER info)
 if [ $? -ne 0 ]; then
-    echo "Docker not accessible."
+    echo "Docker not accessible. Try rerunning this script as root."
     exit 2
 fi
 
@@ -41,6 +42,6 @@ fi
 for PATH in $DIR/images/*; do
     IMAGE=(${PATH//\// })
     IMAGE=${IMAGE[${#IMAGE[@]}-1]}
-    IMAGE_NAME="${IMAGE_PREFIX}darsyn/${IMAGE}:${IMAGE_TAG}${IMAGE_TAG_SUFFIX}"
+    IMAGE_NAME="${IMAGE_PREFIX}darsyn/${IMAGE}:${IMAGE_TAG}"
     $DOCKER build -t "$IMAGE_NAME" $PATH
 done
