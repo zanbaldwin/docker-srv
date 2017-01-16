@@ -1,3 +1,11 @@
+# If you wish to use this template for a containerized GitLab installation then
+# you can use `envsubst` command from the gettext package:
+
+#   GIT_DOMAIN=git.example.com \
+#   REGISTRY_DOMAIN=r.example.com \
+#   CHAT_DOMAIN=chat.example.com \
+#   envsubst < docker-compose.gitlab-example.com > ../docker-compose.override.yml
+
 version: '2'
 services:
 
