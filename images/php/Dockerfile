@@ -14,7 +14,6 @@ ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
-COPY zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY php.ini /usr/local/etc/php/php.ini
 
 RUN sed -i -e 's/www-data/root/g' /usr/local/etc/php-fpm.d/www.conf \
