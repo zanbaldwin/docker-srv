@@ -13,6 +13,7 @@ RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
 ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
 
 ENV TERM xterm
+ENV COMPOSER_ALLOW_SUPERUSER 1
 
 RUN apk add --no-cache bash bash-completion curl nano git openssh ncurses \
     && mkdir /var/run/sshd \

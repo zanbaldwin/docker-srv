@@ -12,6 +12,8 @@ RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && chmod +x /usr/local/bin/dumb-init
 ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
 
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
 COPY zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY php.ini /usr/local/etc/php/php.ini
 
