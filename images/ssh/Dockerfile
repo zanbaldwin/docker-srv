@@ -6,11 +6,11 @@ EXPOSE 22
 RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && git clone git://github.com/Yelp/dumb-init.git /tmp/dumb-init \
     && (cd /tmp/dumb-init; git checkout $(git describe --tags); make) \
-    && mv /tmp/dumb-init/dumb-init /usr/local/bin/dumb-init \
+    && mv /tmp/dumb-init/dumb-init /sbin/dumb-init \
     && rm -rf /tmp/dumb-init \
     && apk del .build-deps \
-    && chmod +x /usr/local/bin/dumb-init
-ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
+    && chmod +x /sbin/dumb-init
+ENTRYPOINT [ "/sbin/dumb-init", "--" ]
 
 ENV TERM xterm
 ENV COMPOSER_ALLOW_SUPERUSER 1
