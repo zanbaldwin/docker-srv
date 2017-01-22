@@ -22,3 +22,10 @@ services:
         image: "darsyn/ssh:3.2.2"
         build: "./images/ssh"
         restart: unless-stopped
+
+    mail:
+        image: "elsdoerfer/exim-sender"
+        restart: unless-stopped
+        ports: [ "25" ]
+        environment:
+            ALLOWED_HOSTS: "172.17.0.1/8;192.168.0.1/16"
