@@ -12,14 +12,15 @@ RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && chmod +x /usr/local/bin/dumb-init
 ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
 
-COPY zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
 COPY php.ini /usr/local/etc/php/php.ini
 
 RUN sed -i -e 's/www-data/root/g' /usr/local/etc/php-fpm.d/www.conf \
     && apk add --no-cache \
         libpng-dev  libjpeg-turbo-dev   libwebp-dev     giflib-dev \
         gmp-dev     icu-dev             libmcrypt-dev   sqlite-dev \
-        libxml2-dev libxslt-dev         sed \
+        libxml2-dev libxslt-dev         sed             ssmtp \
     && docker-php-ext-configure gd --with-jpeg-dir=/usr \
     && docker-php-ext-install \
         bcmath      dba         exif        gd      gmp     hash    intl \

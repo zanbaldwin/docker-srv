@@ -13,6 +13,8 @@ RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
 ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
 
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY server.conf /etc/nginx/conf.d/default.conf
+COPY server.conf /etc/nginx/sites-available/default.conf
+RUN apk add --no-cache gettext
 
 CMD [ "nginx", "-g", "daemon off;" ]
+CMD [ "sh", "-c", "export HOSTNAME=$(hostname -f) && envsubst '$HOSTNAME' < /etc/nginx/sites-available/default.conf > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]

@@ -42,6 +42,15 @@ services:
         volumes:
             - "/var/lib/redis:/data"
 
+    mail:
+        extends:
+            file: container-templates.yml
+            service: mail
+        container_name: mail
+        hostname: mail.darsyn.io
+        environment:
+            PRIMARY_HOST: mail.darsyn.io
+
     neo4j:
         container_name: neo4j
         image: "neo4j:3.1.0"

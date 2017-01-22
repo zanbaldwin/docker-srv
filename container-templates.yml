@@ -1,14 +1,17 @@
+# This file is so that image tags can be updated without having to update files
+# that are not under version control (such as docker-compose.override.yml).
+
 version: '2'
 services:
 
     php:
-        image: "darsyn/php:3.2.2"
+        image: "darsyn/php:3.3.0"
         build: "./images/php"
         restart: unless-stopped
         ports: [ "9000" ]
 
     web:
-        image: "darsyn/web:3.2.2"
+        image: "darsyn/web:3.3.0"
         build: "./images/web"
         restart: unless-stopped
         ports: [ "80" ]
@@ -16,6 +19,13 @@ services:
             VIRTUAL_PORT: 80
 
     ssh:
-        image: "darsyn/ssh:3.2.2"
+        image: "darsyn/ssh:3.3.0"
         build: "./images/ssh"
         restart: unless-stopped
+
+    mail:
+        image: "elsdoerfer/exim-sender"
+        restart: unless-stopped
+        ports: [ "25" ]
+        environment:
+            ALLOWED_HOSTS: "172.17.0.1/8;192.168.0.1/16"
