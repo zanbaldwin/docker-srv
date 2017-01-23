@@ -5,23 +5,38 @@ version: '2'
 services:
 
     php:
-        image: "darsyn/php:3.3.0"
+        image: "darsyn/php:3.3.1"
         build: "./images/php"
         restart: unless-stopped
         ports: [ "9000" ]
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "50m"
+                max-file: "1"
 
     web:
-        image: "darsyn/web:3.3.0"
+        image: "darsyn/web:3.3.1"
         build: "./images/web"
         restart: unless-stopped
         ports: [ "80" ]
         environment:
             VIRTUAL_PORT: 80
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "25m"
+                max-file: "1"
 
     ssh:
-        image: "darsyn/ssh:3.3.0"
+        image: "darsyn/ssh:3.3.1"
         build: "./images/ssh"
         restart: unless-stopped
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "25m"
+                max-file: "1"
 
     mail:
         image: "elsdoerfer/exim-sender"
@@ -29,3 +44,8 @@ services:
         ports: [ "25" ]
         environment:
             ALLOWED_HOSTS: "172.17.0.1/8;192.168.0.1/16"
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "25m"
+                max-file: "1"
