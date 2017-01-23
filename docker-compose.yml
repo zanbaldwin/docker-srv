@@ -10,6 +10,11 @@ services:
             - "./sites-generated:/etc/nginx/conf.d:ro"
             - "/etc/letsencrypt:/etc/letsencrypt:ro"
             - "/etc/ssl:/etc/ssl:ro"
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "1"
 
     nginx-gen:
         container_name: nginx-gen
@@ -20,6 +25,11 @@ services:
             - "./templates:/etc/docker-gen/templates:ro"
             - "./sites-generated:/etc/docker-gen/output"
             - "/var/run/docker.sock:/tmp/docker.sock:ro"
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "1"
 
     mysql:
         container_name: mysql
@@ -31,6 +41,11 @@ services:
         volumes:
             - "/var/lib/mysql:/var/lib/mysql"
             - "/etc/mysql:/etc/mysql/conf.d"
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "50m"
+                max-file: "1"
 
     redis:
         container_name: redis
@@ -39,6 +54,11 @@ services:
         ports: [ "6379:6379" ]
         volumes:
             - "/var/lib/redis:/data"
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "25m"
+                max-file: "1"
 
     mail:
         extends:
@@ -48,6 +68,11 @@ services:
         hostname: mail.darsyn.io
         environment:
             PRIMARY_HOST: mail.darsyn.io
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "1"
 
     neo4j:
         container_name: neo4j
@@ -56,3 +81,8 @@ services:
         ports: [ "7474:7474", "7687:7687" ]
         volumes:
             - "/var/lib/neo4j:/data"
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "25m"
+                max-file: "1"
