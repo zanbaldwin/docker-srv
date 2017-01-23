@@ -10,6 +10,7 @@ services:
             - "./sites-generated:/etc/nginx/conf.d:ro"
             - "/etc/letsencrypt:/etc/letsencrypt:ro"
             - "/etc/ssl:/etc/ssl:ro"
+        depends_on: [ "nginx-gen" ]
         logging:
             driver: "json-file"
             options:
