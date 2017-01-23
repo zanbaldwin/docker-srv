@@ -44,4 +44,9 @@ for PATH in $DIR/images/*; do
     IMAGE=${IMAGE[${#IMAGE[@]}-1]}
     IMAGE_NAME="${IMAGE_PREFIX}darsyn/${IMAGE}:${IMAGE_TAG}"
     $DOCKER build -t "$IMAGE_NAME" $PATH
+    if [ $? -ne 0 ]; then
+        echo ""
+        echo "Error building '$IMAGE_NAME'."
+        exit 1
+    fi
 done
