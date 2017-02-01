@@ -21,7 +21,7 @@ services:
         container_name: nginx-gen
         image: "jwilder/docker-gen:0.7.3"
         restart: unless-stopped
-        command: "-notify-sighup nginx -watch -only-exposed /etc/docker-gen/templates/nginx.tmpl /etc/docker-gen/output/containers.conf"
+        command: "-notify-sighup nginx -watch -only-exposed /etc/docker-gen/templates/nginx.conf /etc/docker-gen/output/containers.conf"
         volumes:
             - "./templates:/etc/docker-gen/templates:ro"
             - "./sites-generated:/etc/docker-gen/output"
