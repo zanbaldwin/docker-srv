@@ -36,7 +36,6 @@ services:
         container_name: mysql
         image: "mysql:8.0.0"
         restart: unless-stopped
-        ports: [ "3306:3306" ]
         environment:
             MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
         volumes:
