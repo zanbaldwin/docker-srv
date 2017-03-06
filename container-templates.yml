@@ -5,7 +5,7 @@ version: '2'
 services:
 
     php:
-        image: "darsyn/php:3.3.2"
+        image: "darsyn/php:3.3.3"
         build: "./images/php"
         restart: unless-stopped
         ports: [ "9000" ]
@@ -16,7 +16,7 @@ services:
                 max-file: "1"
 
     web:
-        image: "darsyn/web:3.3.2"
+        image: "darsyn/web:3.3.3"
         build: "./images/web"
         restart: unless-stopped
         ports: [ "80" ]
@@ -29,7 +29,7 @@ services:
                 max-file: "1"
 
     ssh:
-        image: "darsyn/ssh:3.3.2"
+        image: "darsyn/ssh:3.3.3"
         build: "./images/ssh"
         restart: unless-stopped
         logging:
