@@ -3,7 +3,7 @@ MAINTAINER Zander Baldwin <hello@zanderbaldwin.com>
 WORKDIR /srv
 EXPOSE 22
 
-RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
+RUN    apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && git clone git://github.com/Yelp/dumb-init.git /tmp/dumb-init \
     && (cd /tmp/dumb-init; git checkout $(git describe --tags); make) \
     && mv /tmp/dumb-init/dumb-init /sbin/dumb-init \
@@ -15,14 +15,29 @@ ENTRYPOINT [ "/sbin/dumb-init", "--" ]
 ENV TERM xterm
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
-RUN apk add --no-cache bash bash-completion curl nano git openssh ncurses \
+# Add and Setup Default Software
+RUN    apk update \
+    && apk add bash bash-completion curl nano git openssh ncurses mysql-client \
     && mkdir /var/run/sshd \
     && sed -i -e "s@/bin/ash@/bin/bash@g" /etc/passwd \
     && ssh-keygen -A
-RUN curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o /etc/profile.d/00-git_prompt.sh \
+
+# Setup Shell Enironment
+RUN    curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o /etc/profile.d/00-git_prompt.sh \
     && curl https://raw.githubusercontent.com/zanderbaldwin/dotfiles/master/.bash_aliases -o /etc/profile.d/10-bash-aliases.sh \
     && curl https://raw.githubusercontent.com/zanderbaldwin/dotfiles/master/.bash_prompt -o /etc/profile.d/20-bash-prompt.sh \
     && echo "cd /srv" > /etc/profile.d/30-srv-directory.sh \
     && mkdir /root/.ssh && touch /root/.ssh/authorized_keys
+
+# Install Composer
+RUN    apk add php7 php7-openssl php7-json php7-phar php7-iconv php7-zlib \
+    && (ln -s /usr/bin/php7 /usr/bin/php || true) \
+    && EXPECTED_SIGNATURE=$(curl https://composer.github.io/installer.sig) \
+    && php -r "copy('https://getcomposer.org/installer', '/tmp/composer-setup.php');" \
+    && ACTUAL_SIGNATURE=$(php -r "echo hash_file('SHA384', '/tmp/composer-setup.php');") \
+    && if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]; then \
+        exit 1; \
+    fi; \
+    php /tmp/composer-setup.php --install-dir="/usr/local/bin" --filename="composer"
 
 CMD [ "/usr/sbin/sshd", "-D" ]
