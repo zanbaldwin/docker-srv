@@ -22,6 +22,7 @@ RUN apk add --no-cache bash bash-completion curl nano git openssh ncurses \
 RUN curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o /etc/profile.d/00-git_prompt.sh \
     && curl https://raw.githubusercontent.com/zanderbaldwin/dotfiles/master/.bash_aliases -o /etc/profile.d/10-bash-aliases.sh \
     && curl https://raw.githubusercontent.com/zanderbaldwin/dotfiles/master/.bash_prompt -o /etc/profile.d/20-bash-prompt.sh \
+    && echo "cd /srv" > /etc/profile.d/30-srv-directory.sh \
     && mkdir /root/.ssh && touch /root/.ssh/authorized_keys
 
 CMD [ "/usr/sbin/sshd", "-D" ]
