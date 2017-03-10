@@ -14,6 +14,7 @@ ENTRYPOINT [ "/sbin/dumb-init", "--" ]
 
 ENV TERM xterm
 ENV COMPOSER_ALLOW_SUPERUSER 1
+COPY motd /etc/motd
 
 # Add and Setup Default Software
 RUN    apk update \
