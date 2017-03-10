@@ -15,18 +15,18 @@ services:
         hostname: "mywebsite.lo"
         links: [ "mywebsite-php:php" ]
         environment:
-            VIRTUAL_HOST: "mywebsite.lo"
+            VIRTUAL_HOST: "mywebsite.tld"
         volumes_from: [ "mywebsite-php" ]
         depends_on: [ "nginx" ]
     mywebsite-ssh:
         extends:
             file: container-templates.yml
             service: ssh
-        hostname: "mywebsite.lo"
+        hostname: "mywebsite.tld"
         links: [ "mysql", "redis", "neo4j" ]
         # Determine the port to connect to once the container is created with:
         # docker port {containerName} 22
         ports: [ 22 ]
-        volumes_from: [ "mywebsite-php" ]
+        volumes_from: [ "mywebsite-php", "cache" ]
         volumes:
             - "./data/mywebsite.ssh:/root/.ssh:ro"

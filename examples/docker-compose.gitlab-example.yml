@@ -4,13 +4,14 @@
 #   GIT_DOMAIN=git.example.com \
 #   REGISTRY_DOMAIN=r.example.com \
 #   CHAT_DOMAIN=chat.example.com \
+#   SSH_DOMAIN=example.com \
 #   envsubst < docker-compose.gitlab-example.com > ../docker-compose.override.yml
 
 version: '2'
 services:
 
     gitlab:
-        image: gitlab/gitlab-ce:8.15.2-ce.0
+        image: gitlab/gitlab-ce:8.17.3-ce.0
         container_name: gitlab
         volumes:
             - "/srv/data/gitlab/config:/etc/gitlab"
@@ -37,7 +38,7 @@ services:
         restart: "unless-stopped"
         depends_on: [ "nginx" ]
     gitlab-runner:
-        image: gitlab/gitlab-runner:alpine-v1.9.1
+        image: gitlab/gitlab-runner:alpine-v1.11.1
         volumes:
             - "/var/run/docker.sock:/var/run/docker.sock"
             - "/srv/data/gitlab/runner:/etc/gitlab-runner"

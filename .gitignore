@@ -1,3 +1,4 @@
+/.cache/
 /.idea/
 /docker-compose.override.yml
 /data/

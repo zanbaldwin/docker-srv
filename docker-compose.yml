@@ -85,3 +85,18 @@ services:
             options:
                 max-size: "25m"
                 max-file: "1"
+
+    cache:
+        container_name: cache
+        image: "alpine:3.5"
+        command: date
+        volumes:
+            - "./.cache/composer:/root/.composer"
+            - "./.cache/glide:/root/.glide"
+            - "./.cache/npm:/root/.npm"
+            - "./.cache/puli:/root/.puli"
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "1m"
+                max-file: "1"
