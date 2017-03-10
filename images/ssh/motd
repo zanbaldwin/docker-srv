@@ -2,12 +2,6 @@
 Welcome
 =======
 
-This OS is Alpine <http://wiki.alpinelinux.org>; the package manager is APK.
-Some basic packages are included by default (curl, nano, git, mysql), so if you
-need something just install it. Some helpful commands are:
-   - apk search [something]
-   - apk add [package-name]
-
 * This environment is only to access files and setup websites. It is NOT the
   environment that the website will actually run in.
 * The webroot is "/srv/public", it will look for "index.php" then "index.html".
@@ -18,7 +12,10 @@ need something just install it. Some helpful commands are:
   When this happens, anything outside the "/srv" directory will be LOST.
    - The entire filesystem is volatile storage.
    - The "/srv" directory is the ONLY directory mounted to permanent storage.
+* "REMOTE HOST IDENTIFICATION HAS CHANGED" warnings are also common (and
+  expected) whenever an environment gets reset. You can ignore this warning.
 
 * The package manager is APK, use it to install any software you need (curl,
   nano, git and mysql-client are installed by default):
    - apk add [package-name]
+
