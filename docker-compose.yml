@@ -10,18 +10,18 @@ services:
             - "./sites-generated:/etc/nginx/conf.d:ro"
             - "/etc/letsencrypt:/etc/letsencrypt:ro"
             - "/etc/ssl:/etc/ssl:ro"
-        depends_on: [ "nginx-gen" ]
+        depends_on: [ "docker-gen" ]
         logging:
             driver: "json-file"
             options:
                 max-size: "10m"
                 max-file: "1"
 
-    nginx-gen:
-        container_name: nginx-gen
+    docker-gen:
+        container_name: docker-gen
         image: "jwilder/docker-gen:0.7.3"
         restart: unless-stopped
-        command: "-notify-sighup nginx -watch -only-exposed /etc/docker-gen/templates/nginx.conf /etc/docker-gen/output/containers.conf"
+        command: "-notify-sighup nginx -watch -only-exposed /etc/docker-gen/templates/reverse-proxy.conf /etc/docker-gen/output/containers.conf"
         volumes:
             - "./templates:/etc/docker-gen/templates:ro"
             - "./sites-generated:/etc/docker-gen/output"

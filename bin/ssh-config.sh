@@ -1,8 +1,17 @@
 #!/bin/bash
 
+DOCKER_GEN_CONTAINER=${DOCKER_GEN_CONTAINER:-"docker-gen"}
+TEMPLATE=${TEMPLATE:-"ssh.conf"}
+
 DOCKER=$(which docker)
 if [ $? -ne 0 ]; then
     echo "Docker not installed."
+    exit 1
+fi
+
+COMPOSE=$(which docker-compose)
+if [ $? -ne 0 ]; then
+    echo "Docker Compose not installed."
     exit 1
 fi
 
@@ -15,4 +24,4 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-${DOCKER} rm $(${DOCKER} ps --all -q -f status=exited)
+${COMPOSE} run --rm ${DOCKER_GEN_CONTAINER} /etc/docker-gen/templates/${TEMPLATE}
