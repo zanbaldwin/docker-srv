@@ -34,14 +34,7 @@ RUN apk add --no-cache --virtual .xdebug-deps autoconf gcc make \
     && apk del .xdebug-deps \
     && touch /usr/local/etc/php/conf.d/xdebug.ini \
     && ( \
-        echo ";zend_extension=xdebug.so"; \
-        echo "xdebug.remote_enable=1"; \
-        echo "xdebug.remote_handler=dbgp"; \
-        echo "xdebug.remote_port=9000"; \
-        echo "xdebug.remote_autostart=1"; \
-        echo "xdebug.remote_connect_back=1"; \
-        echo "xdebug.idekey=XDEBUG"; \
-    ) >> /usr/local/etc/php/conf.d/xdebug.ini
+    && echo ";zend_extension=xdebug.so" > /usr/local/etc/php/conf.d/pecl-xdebug.ini
 
 CMD [ "php-fpm", "--allow-to-run-as-root", "--nodaemonize" ]
 
