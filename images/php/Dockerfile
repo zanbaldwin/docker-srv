@@ -19,20 +19,17 @@ COPY php.ini /usr/local/etc/php/php.ini
 RUN sed -i -e 's/www-data/root/g' /usr/local/etc/php-fpm.d/www.conf \
     && apk add --no-cache --virtual .extension-build-deps \
         libpng-dev      libjpeg-turbo-dev   libwebp-dev     giflib-dev \
-        gmp-dev         icu-dev             libmcrypt-dev   sqlite-dev \
-        libxml2-dev     libxslt-dev         sed \
+        gmp-dev         icu-dev             libxslt-dev     gettext-dev \
     && apk add --no-cache --virtual .extension-runtime-deps \
         libpng          libjpeg-turbo       libwebp         giflib \
-        gmp             icu                 libmcrypt       sqlite \
-        libxml2         libxslt             ssmtp           openssl \
+        gmp             icu                 libxslt         ssmtp \
+        openssl         gettext \
     && echo 'sendmail_path="/usr/sbin/ssmtp -t"' > /usr/local/etc/php/conf.d/mail.ini \
     && echo 'FromLineOverride=YES' >> /etc/ssmtp/ssmtp.conf \
     && docker-php-ext-configure gd --with-jpeg-dir=/usr \
     && docker-php-ext-install \
-        bcmath  ctype   curl        dba         dom         exif    gd      gettext \
-        gmp     iconv   intl        json        mbstring    mysqli  mysqlnd opcache \
-        openssl pcntl   pdo         pdo_mysql   pdo_sqlite  phar    session sockets \
-        sqlite3 xml     xmlreader   xsl         zip         zlib \
+        bcmath      dba         exif        gd          gettext     gmp     intl \
+        mysqli      opcache     pcntl       pdo_mysql   sockets     xsl     zip \
     && apk del .extension-build-deps
 
 # Add Extensions for Asynchronous PHP
