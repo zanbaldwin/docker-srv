@@ -16,6 +16,7 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 
 COPY php.ini /usr/local/etc/php/php.ini
 
+# Add Extension included in PHP Source Code
 RUN sed -i -e 's/www-data/root/g' /usr/local/etc/php-fpm.d/www.conf \
     && apk add --no-cache --virtual .extension-build-deps \
         libpng-dev      libjpeg-turbo-dev   libwebp-dev     giflib-dev \
@@ -32,7 +33,7 @@ RUN sed -i -e 's/www-data/root/g' /usr/local/etc/php-fpm.d/www.conf \
         mysqli      opcache     pcntl       pdo_mysql   sockets     xsl     zip \
     && apk del .extension-build-deps
 
-# Add Extensions for Asynchronous PHP
+# Add Extensions from PECL
 RUN    apk add --no-cache --virtual .event-build-deps \
         $PHPIZE_DEPS    libevent-dev       openssl-dev \
     && apk add --no-cache --virtual .event-runtime-deps libevent openssl \
