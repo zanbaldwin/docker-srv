@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # Dependencies:
 #     Required: bash, dirname, readlink, grep, awk
 #     Optional: id, git
@@ -49,8 +49,7 @@ fi
 
 for IMAGE_DIR in ${DIR}/images/*; do
     # Determine image metadata.
-    IMAGE_ARRAY=(${IMAGE_DIR//\// })
-    IMAGE="${IMAGE_ARRAY[${#IMAGE_ARRAY[@]}-1]}"
+    IMAGE=$(basename "${IMAGE_DIR}")
     IMAGE_NAME="${IMAGE_PREFIX}darsyn/${IMAGE}:${IMAGE_TAG}"
     # Pull latest parent images.
     PARENT=$(grep "^FROM\\s.\+\(\\:.\+\)\?$" "${IMAGE_DIR}/Dockerfile" 2>/dev/null | awk '{print $2}' 2>/dev/null)
