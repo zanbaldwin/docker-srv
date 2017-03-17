@@ -23,7 +23,7 @@ command -v "${DOCKER}" >/dev/null 2>&1 || { echo >&2 "Docker Client \"${DOCKER}\
 INFO=$("${DOCKER}" info 1>/dev/null 2>&1)
 if [ $? -ne 0 ]; then
     echo "Docker Daemon unavailable. Aborting!"
-    if [ $(id -u 2>/dev/null) -ne 0 ]; then
+    if [ "$(id -u 2>/dev/null)" -ne "0" ]; then
         echo "Perhaps retry as root?"
     fi
     exit 1
@@ -40,17 +40,17 @@ IMAGE_TAG="latest"
 GIT=$(command -v git)
 if [ $? -eq 0 ]; then
     # Git is installed. Great start.
-    GITDIR=$(cd "${DIR}"; "${GIT}" rev-parse --git-dir 2>/dev/null)
+    GITDIR=$(cd "${DIR}" || return; "${GIT}" rev-parse --git-dir 2>/dev/null)
     if [ "${GITDIR}" != "" ]; then
         # The directory that the current script is located in is a Git repository, grab the latest short tag.
-        IMAGE_TAG=$(cd "${DIR}"; "${GIT}" describe --tags --abbrev=0)
+        IMAGE_TAG=$(cd "${DIR}" || return; "${GIT}" describe --tags --abbrev=0)
     fi
 fi
 
 for IMAGE_DIR in ${DIR}/images/*; do
     # Determine image metadata.
-    IMAGE=(${IMAGE_DIR//\// })
-    IMAGE="${IMAGE[${#IMAGE[@]}-1]}"
+    IMAGE_ARRAY=(${IMAGE_DIR//\// })
+    IMAGE="${IMAGE_ARRAY[${#IMAGE_ARRAY[@]}-1]}"
     IMAGE_NAME="${IMAGE_PREFIX}darsyn/${IMAGE}:${IMAGE_TAG}"
     # Pull latest parent images.
     PARENT=$(grep "^FROM\\s.\+\(\\:.\+\)\?$" "${IMAGE_DIR}/Dockerfile" 2>/dev/null | awk '{print $2}' 2>/dev/null)
