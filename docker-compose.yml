@@ -3,7 +3,7 @@ services:
 
     nginx:
         container_name: nginx
-        image: "nginx:1.11.8-alpine"
+        image: "nginx:1.11.10-alpine"
         restart: unless-stopped
         ports: [ "80:80", "443:443" ]
         volumes:
@@ -49,7 +49,7 @@ services:
 
     redis:
         container_name: redis
-        image: "redis:3.2.6-alpine"
+        image: "redis:3.2.8-alpine"
         restart: unless-stopped
         ports: [ "6379:6379" ]
         volumes:
@@ -76,7 +76,7 @@ services:
 
     neo4j:
         container_name: neo4j
-        image: "neo4j:3.1.0"
+        image: "neo4j:3.1.2"
         restart: unless-stopped
         volumes:
             - "/var/lib/neo4j:/data"
