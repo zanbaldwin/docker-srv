@@ -61,17 +61,18 @@ services:
                 max-file: "1"
 
     mail:
-        extends:
-            file: container-templates.yml
-            service: mail
+        image: "elsdoerfer/exim-sender"
+        restart: unless-stopped
+        ports: [ "25" ]
         container_name: mail
         hostname: mail.darsyn.io
         environment:
+            ALLOWED_HOSTS: "172.17.0.1/8;192.168.0.1/16"
             PRIMARY_HOST: mail.darsyn.io
         logging:
             driver: "json-file"
             options:
-                max-size: "10m"
+                max-size: "25m"
                 max-file: "1"
 
     neo4j:
