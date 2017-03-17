@@ -1,0 +1,19 @@
+sudo: required
+language: generic
+services:
+    - docker
+before_install:
+    - ./build.sh
+    - bin/create-environment.sh google.com
+    - sed -i -e 's/reverse-proxy.conf/reverse-proxy-nossl.conf/g' ./docker-compose.yml
+    - mkdir -p ./data/google.com/public && echo "<?php echo implode('-', ['docker', 'srv', 'google']);" > ./data/google.com/public/index.php
+    - mkdir -p ./data/google.com-ssh && ssh-keygen -t rsa -b 1024 -N "" -f ./data/google.com-ssh/id_rsa && cat ./data/google.com-ssh/id_rsa.pub > ./data/google.com-ssh/authorized_keys
+    - sudo chown -R root:root ./data
+    - docker-compose up -d
+
+script:
+    - export NGINX_CONTAINER_IP=$(docker inspect $(docker-compose ps -q nginx) | grep IPAddress | cut -d \" -f 4 | tr -d '\n')
+    - export SSH_CONTAINER_IP=$(docker inspect $(docker-compose ps -q google.com-ssh) | grep IPAddress | cut -d \" -f 4 | tr -d '\n')
+    - curl -s -I http://google.com --resolve "google.com:80:${NGINX_CONTAINER_IP}" | grep "^HTTP/1\\.[01] 200"
+    - curl -s http://google.com --resolve "google.com:80:${NGINX_CONTAINER_IP}" | grep "^docker-srv-google$"
+    - echo "pwd" | ssh "root@${SSH_CONTAINER_IP}" -p $(docker-compose port google.com-ssh 22 | cut -d ':' -f 2) -i ./data/google.com-ssh/id_rsa | grep "^/srv$"

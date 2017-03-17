@@ -1,34 +1,39 @@
+# If you wish to use this template for a containerized GitLab installation then
+# you can use `envsubst` command from the gettext package:
+
+#   DOMAIN="mywebsite.tld" envsubst < docker-compose.override-example.com > ../docker-compose.override.yml
+
 version: '2'
 services:
 
-    mywebsite-php:
+    ${DOMAIN}-php:
         extends:
             file: container-templates.yml
             service: php
         links: [ "mysql", "redis", "neo4j" ]
         volumes:
-            - "./data/mywebsite:/srv"
-    mywebsite-web:
+            - "./data/${DOMAIN}:/srv"
+    ${DOMAIN}-web:
         extends:
             file: container-templates.yml
             service: web
-        hostname: "mywebsite.tld"
-        links: [ "mywebsite-php:php" ]
+        hostname: "${DOMAIN}"
+        links: [ "${DOMAIN}-php:php" ]
         environment:
-            VIRTUAL_HOST: "mywebsite.tld"
-        volumes_from: [ "mywebsite-php" ]
+            VIRTUAL_HOST: "${DOMAIN}"
+        volumes_from: [ "${DOMAIN}-php" ]
         depends_on: [ "nginx" ]
-    mywebsite-ssh:
+    ${DOMAIN}-ssh:
         extends:
             file: container-templates.yml
             service: ssh
-        hostname: "mywebsite.tld"
+        hostname: "${DOMAIN}"
         links: [ "mysql", "redis", "neo4j" ]
         # Force a port here with "{hostPort}:22", or determine the port to
         # connect to once the container is created - either with
         # bin/ssh-config.sh or with the command:
-        #    "docker port {containerName} 22"
+        #    "docker-compose port ${DOMAIN}-ssh 22"
         ports: [ 22 ]
-        volumes_from: [ "mywebsite-php", "cache" ]
+        volumes_from: [ "${DOMAIN}-php", "cache" ]
         volumes:
-            - "./data/mywebsite.ssh:/root/.ssh:ro"
+            - "./data/${DOMAIN}-ssh:/root/.ssh:ro"
