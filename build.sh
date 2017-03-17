@@ -19,7 +19,7 @@ if [ $? -ne 0 ]; then
     exit 2
 fi
 
-# Get full, resolved directory of the currect script.
+# Get full, resolved directory of the current script.
 SOURCE="${BASH_SOURCE[0]}"
 # Resolve $SOURCE until the file is no longer a symlink.
 while [ -h "${SOURCE}" ]; do
@@ -42,11 +42,18 @@ if [ $? -eq 0 ]; then
     fi
 fi
 
-for PATH in ${DIR}/images/*; do
-    IMAGE=(${PATH//\// })
-    IMAGE=${IMAGE[${#IMAGE[@]}-1]}
+for IMAGE_DIR in ${DIR}/images/*; do
+    # Determine image metadata.
+    IMAGE=(${IMAGE_DIR//\// })
+    IMAGE="${IMAGE[${#IMAGE[@]}-1]}"
     IMAGE_NAME="${IMAGE_PREFIX}darsyn/${IMAGE}:${IMAGE_TAG}"
-    ${DOCKER} build -t "${IMAGE_NAME}" ${PATH}
+    # Pull latest parent images.
+    PARENT=$(cat "${IMAGE_DIR}/Dockerfile" 2>/dev/null | grep "^FROM\\s.\+\(\\:.\+\)\?$" 2>/dev/null | awk '{print $2}' 2>/dev/null)
+    if [ "${PARENT}" != "" ]; then
+        "${DOCKER}" pull "${PARENT}"
+    fi
+    # Build the image.
+    "${DOCKER}" build -t "${IMAGE_NAME}" "${IMAGE_DIR}"
     if [ $? -ne 0 ]; then
         echo ""
         echo "Error building '${IMAGE_NAME}'."
