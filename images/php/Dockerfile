@@ -29,12 +29,10 @@ RUN sed -i -e 's/www-data/root/g' /usr/local/etc/php-fpm.d/www.conf \
     && echo 'FromLineOverride=YES' >> /etc/ssmtp/ssmtp.conf \
     && docker-php-ext-configure gd --with-jpeg-dir=/usr \
     && docker-php-ext-install \
-        bcmath          dba                 exif            gd \
-        gmp             hash                intl            json \
-        mbstring        mcrypt              mysqli          opcache \
-        pdo             pdo_mysql           pdo_sqlite      session \
-        simplexml       sockets             xml             xsl \
-        zip \
+        bcmath  ctype   curl        dba         dom         exif    gd      gettext \
+        gmp     iconv   intl        json        mbstring    mysqli  mysqlnd opcache \
+        openssl pcntl   pdo         pdo_mysql   pdo_sqlite  phar    session sockets \
+        sqlite3 xml     xmlreader   xsl         zip         zlib \
     && apk del .extension-build-deps
 
 # Add Extensions for Asynchronous PHP
