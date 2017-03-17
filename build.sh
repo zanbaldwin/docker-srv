@@ -1,9 +1,9 @@
 #!/bin/sh
 # Dependencies:
-#     Required: bash, dirname, readlink, grep, awk
-#     Optional: id, git
-# A workaround for Bash will hopefully be found in the future as /bin/sh is more
-# widely available on *nix systems.
+#  - POSIX-compliant shell located or symlinked at "/bin/sh".
+#  - The following programs available on $PATH:
+#       Required: dirname, readlink, basename, grep, awk
+#       Optional: id, git
 
 # Use this if you wish to prefix the image name with something.
 # E.g. "registry.gitlab.com/" to result in images like
@@ -30,19 +30,19 @@ if [ $? -ne 0 ]; then
 fi
 
 # Get the full, resolved directory of the current script NOT the current working
-# directory. The following relies on dirname and readlink executables being
-# available on the path, but at least this solution isn't restricted to
-# Bash-only environments.
+# directory.
 DIR=$(dirname "$(readlink -f "$0")")
 
-# Determine if the build script is part of a Git repository, and determine the appropriate tag to use for the image.
+# Determine if the build script is part of a Git repository, and determine the
+# appropriate tag to use for the image.
 IMAGE_TAG="latest"
 GIT=$(command -v git)
 if [ $? -eq 0 ]; then
     # Git is installed. Great start.
     GITDIR=$(cd "${DIR}" || return; "${GIT}" rev-parse --git-dir 2>/dev/null)
     if [ "${GITDIR}" != "" ]; then
-        # The directory that the current script is located in is a Git repository, grab the latest short tag.
+        # The directory that the current script is located in is a Git
+        # repository, grab the latest short tag.
         IMAGE_TAG=$(cd "${DIR}" || return; "${GIT}" describe --tags --abbrev=0)
     fi
 fi
