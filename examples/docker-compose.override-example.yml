@@ -12,7 +12,7 @@ services:
         extends:
             file: container-templates.yml
             service: web
-        hostname: "mywebsite.lo"
+        hostname: "mywebsite.tld"
         links: [ "mywebsite-php:php" ]
         environment:
             VIRTUAL_HOST: "mywebsite.tld"
@@ -24,8 +24,10 @@ services:
             service: ssh
         hostname: "mywebsite.tld"
         links: [ "mysql", "redis", "neo4j" ]
-        # Determine the port to connect to once the container is created with:
-        # docker port {containerName} 22
+        # Force a port here with "{hostPort}:22", or determine the port to
+        # connect to once the container is created - either with
+        # bin/ssh-config.sh or with the command:
+        #    "docker port {containerName} 22"
         ports: [ 22 ]
         volumes_from: [ "mywebsite-php", "cache" ]
         volumes:

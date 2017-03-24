@@ -3,25 +3,25 @@ services:
 
     nginx:
         container_name: nginx
-        image: "nginx:1.11.8-alpine"
+        image: "nginx:1.11.10-alpine"
         restart: unless-stopped
         ports: [ "80:80", "443:443" ]
         volumes:
             - "./sites-generated:/etc/nginx/conf.d:ro"
             - "/etc/letsencrypt:/etc/letsencrypt:ro"
             - "/etc/ssl:/etc/ssl:ro"
-        depends_on: [ "nginx-gen" ]
+        depends_on: [ "docker-gen" ]
         logging:
             driver: "json-file"
             options:
                 max-size: "10m"
                 max-file: "1"
 
-    nginx-gen:
-        container_name: nginx-gen
+    docker-gen:
+        container_name: docker-gen
         image: "jwilder/docker-gen:0.7.3"
         restart: unless-stopped
-        command: "-notify-sighup nginx -watch -only-exposed /etc/docker-gen/templates/nginx.conf /etc/docker-gen/output/containers.conf"
+        command: "-notify-sighup nginx -watch -only-exposed /etc/docker-gen/templates/reverse-proxy.conf /etc/docker-gen/output/containers.conf"
         volumes:
             - "./templates:/etc/docker-gen/templates:ro"
             - "./sites-generated:/etc/docker-gen/output"
@@ -49,7 +49,7 @@ services:
 
     redis:
         container_name: redis
-        image: "redis:3.2.6-alpine"
+        image: "redis:3.2.8-alpine"
         restart: unless-stopped
         ports: [ "6379:6379" ]
         volumes:
@@ -61,22 +61,23 @@ services:
                 max-file: "1"
 
     mail:
-        extends:
-            file: container-templates.yml
-            service: mail
+        image: "elsdoerfer/exim-sender"
+        restart: unless-stopped
+        ports: [ "25" ]
         container_name: mail
         hostname: mail.darsyn.io
         environment:
+            ALLOWED_HOSTS: "172.17.0.1/8;192.168.0.1/16"
             PRIMARY_HOST: mail.darsyn.io
         logging:
             driver: "json-file"
             options:
-                max-size: "10m"
+                max-size: "25m"
                 max-file: "1"
 
     neo4j:
         container_name: neo4j
-        image: "neo4j:3.1.0"
+        image: "neo4j:3.1.2"
         restart: unless-stopped
         volumes:
             - "/var/lib/neo4j:/data"

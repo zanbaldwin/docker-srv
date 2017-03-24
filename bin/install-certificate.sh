@@ -15,25 +15,25 @@ function display_usage() {
 function nginx_control {
     case $1 in
         stop)
-            if [ "$NGINX_RUNNING" != "true" ]; then
+            if [ "${NGINX_RUNNING}" != "true" ]; then
                 return
             fi
-            $DOCKER stop $NGINX_CONTAINER
+            ${DOCKER} stop ${NGINX_CONTAINER}
             ;;
         start)
-            if [ "$NGINX_RUNNING" != "true" ]; then
+            if [ "${NGINX_RUNNING}" != "true" ]; then
                 return true
             fi
-            $DOCKER exec $NGINX_CONTAINER nginx -t 1>/dev/null 2>&1
+            ${DOCKER} exec ${NGINX_CONTAINER} nginx -t 1>/dev/null 2>&1
             if [ $? -ne 0 ]; then
                 echo "Nginx configuration is not valid." 1>&2
-                echo "Run \"{docker exec nginx} nginx -t\" for detailed output." 1>&2
+                echo "Run \"[docker exec nginx] nginx -t\" for detailed output." 1>&2
                 echo 1
             fi
-            $DOCKER start $NGINX_CONTAINER
+            ${DOCKER} start ${NGINX_CONTAINER}
             ;;
         *)
-            echo "Internal error (invalid nginx control command)." 1>&2
+            echo "Internal error (invalid Nginx control command)." 1>&2
             exit 1
             ;;
     esac
@@ -57,6 +57,6 @@ if [ $? -ne 0 ]; then
 fi
 # Don't bother checking if user has access to Docker, we already know we are
 # running as root.
-NGINX_RUNNING=$($DOCKER inspect -f "{{.State.Running}}" $NGINX_CONTAINER)
+NGINX_RUNNING=$(${DOCKER} inspect -f "{{.State.Running}}" ${NGINX_CONTAINER})
 
 nginx_control stop && letsencrypt certonly --standalone -d "$1" -d "www.$1" && nginx_control start
