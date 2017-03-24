@@ -33,6 +33,20 @@ RUN sed -i -e 's/www-data/root/g' /usr/local/etc/php-fpm.d/www.conf \
         mysqli      opcache     pcntl       pdo_mysql   sockets     xsl     zip \
     && apk del .extension-build-deps
 
+# Add Extensions from PECL
+RUN    apk add --no-cache --virtual .event-build-deps \
+        $PHPIZE_DEPS    libevent-dev       openssl-dev \
+    && apk add --no-cache --virtual .event-runtime-deps libevent openssl \
+    && pecl install ev \
+    # Would love to not have to install the event extension, but unfortunately
+    # support for the ev extension isn't as widespread as I would like.
+    && pecl install event \
+    && touch /usr/local/etc/php/conf.d/pecl-ev.ini \
+    && touch /usr/local/etc/php/conf.d/pecl-event.ini \
+    && echo "extension=ev.so" > /usr/local/etc/php/conf.d/pecl-ev.ini \
+    && echo "extension=event.so" > /usr/local/etc/php/conf.d/pecl-event.ini \
+    && apk del .event-build-deps
+
 RUN    apk add --no-cache --virtual .xdebug-build-deps $PHPIZE_DEPS \
     && pecl install xdebug \
     && touch /usr/local/etc/php/conf.d/pecl-xdebug.ini \
