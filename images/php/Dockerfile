@@ -33,11 +33,21 @@ RUN sed -i -e 's/www-data/root/g' /usr/local/etc/php-fpm.d/www.conf \
         mysqli      opcache     pcntl       pdo_mysql   sockets     xsl     zip \
     && apk del .extension-build-deps
 
-RUN    apk add --no-cache --virtual .xdebug-build-deps $PHPIZE_DEPS \
+# Add Extensions from PECL
+RUN    apk add --no-cache --virtual .pecl-build-deps $PHPIZE_DEPS \
+    # Ev PECL Extension.
+    # Install this instead of the Event PECL extension (since it pollutes the global
+    # namespace with a class called Event that clashes with some old-school
+    # frameworks/applications).
+    && pecl install ev \
+    && echo "extension=ev.so" > /usr/local/etc/php/conf.d/pecl-ev.ini \
+    # Redis PECL Extension.
+    && pecl install redis \
+    && echo "extension=redis.so" > /usr/local/etc/php/conf.d/pecl-redis.ini \
+    # XDebug Extension (disabled by default).
     && pecl install xdebug \
-    && touch /usr/local/etc/php/conf.d/pecl-xdebug.ini \
     && echo ";zend_extension=xdebug.so" > /usr/local/etc/php/conf.d/pecl-xdebug.ini \
-    && apk del .xdebug-build-deps
+    && apk del .pecl-build-deps
 
 # Install Composer
 RUN    curl "https://getcomposer.org/installer" -o "/tmp/composer-setup.php" \
