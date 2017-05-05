@@ -26,6 +26,10 @@ services:
                 max-size: "25m"
                 max-file: "1"
 
+    # Helpful Reminder:
+    # The directories that you mount to the SSH container as "/root/.ssh" MUST be
+    # owned by root and 755 on the host machine, otherwise publickey authentication
+    # will NOT work, and it will drop down to password authentication.
     ssh:
         image: "darsyn/ssh:3.3.12"
         build: "./images/ssh"
