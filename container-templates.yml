@@ -5,10 +5,9 @@ version: '2'
 services:
 
     php:
-        image: "darsyn/php:3.3.10"
+        image: "darsyn/php:3.3.11"
         build: "./images/php"
         restart: unless-stopped
-        ports: [ "9000" ]
         logging:
             driver: "json-file"
             options:
@@ -16,10 +15,9 @@ services:
                 max-file: "1"
 
     web:
-        image: "darsyn/web:3.3.10"
+        image: "darsyn/web:3.3.11"
         build: "./images/web"
         restart: unless-stopped
-        ports: [ "80" ]
         environment:
             VIRTUAL_PORT: 80
         logging:
@@ -29,7 +27,7 @@ services:
                 max-file: "1"
 
     ssh:
-        image: "darsyn/ssh:3.3.10"
+        image: "darsyn/ssh:3.3.11"
         build: "./images/ssh"
         restart: unless-stopped
         logging:
