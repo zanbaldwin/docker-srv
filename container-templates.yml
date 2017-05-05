@@ -5,7 +5,7 @@ version: '2'
 services:
 
     php:
-        image: "darsyn/php:3.3.11"
+        image: "darsyn/php:3.3.12"
         build: "./images/php"
         restart: unless-stopped
         logging:
@@ -15,7 +15,7 @@ services:
                 max-file: "1"
 
     web:
-        image: "darsyn/web:3.3.11"
+        image: "darsyn/web:3.3.12"
         build: "./images/web"
         restart: unless-stopped
         environment:
@@ -27,7 +27,7 @@ services:
                 max-file: "1"
 
     ssh:
-        image: "darsyn/ssh:3.3.11"
+        image: "darsyn/ssh:3.3.12"
         build: "./images/ssh"
         restart: unless-stopped
         logging:
