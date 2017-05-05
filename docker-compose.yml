@@ -51,7 +51,6 @@ services:
         container_name: redis
         image: "redis:3.2.8-alpine"
         restart: unless-stopped
-        ports: [ "6379:6379" ]
         volumes:
             - "/var/lib/redis:/data"
         logging:
@@ -63,7 +62,6 @@ services:
     mail:
         image: "elsdoerfer/exim-sender"
         restart: unless-stopped
-        ports: [ "25" ]
         container_name: mail
         hostname: mail.darsyn.io
         environment:
