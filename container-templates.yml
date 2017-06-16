@@ -5,7 +5,7 @@ version: '2'
 services:
 
     php:
-        image: "darsyn/php:3.3.12"
+        image: "darsyn/php:3.3.13"
         build: "./images/php"
         restart: unless-stopped
         logging:
@@ -15,7 +15,7 @@ services:
                 max-file: "1"
 
     web:
-        image: "darsyn/web:3.3.12"
+        image: "darsyn/web:3.3.13"
         build: "./images/web"
         restart: unless-stopped
         environment:
@@ -26,8 +26,12 @@ services:
                 max-size: "25m"
                 max-file: "1"
 
+    # Helpful Reminder:
+    # The directories that you mount to the SSH container as "/root/.ssh" MUST
+    # be owned by root and 755 on the host machine, otherwise public key
+    # authentication will NOT work, and will drop down to password auth instead.
     ssh:
-        image: "darsyn/ssh:3.3.12"
+        image: "darsyn/ssh:3.3.13"
         build: "./images/ssh"
         restart: unless-stopped
         logging:

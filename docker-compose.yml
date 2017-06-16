@@ -3,7 +3,7 @@ services:
 
     nginx:
         container_name: nginx
-        image: "nginx:1.11.10-alpine"
+        image: "nginx:1.13.1-alpine"
         restart: unless-stopped
         ports: [ "80:80", "443:443" ]
         volumes:
@@ -34,7 +34,7 @@ services:
 
     mysql:
         container_name: mysql
-        image: "mysql:8.0.0"
+        image: "mysql:8.0.1"
         restart: unless-stopped
         environment:
             MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
@@ -49,7 +49,7 @@ services:
 
     redis:
         container_name: redis
-        image: "redis:3.2.8-alpine"
+        image: "redis:3.2.9-alpine"
         restart: unless-stopped
         volumes:
             - "/var/lib/redis:/data"
@@ -75,7 +75,7 @@ services:
 
     neo4j:
         container_name: neo4j
-        image: "neo4j:3.1.2"
+        image: "neo4j:3.2.1"
         restart: unless-stopped
         volumes:
             - "/var/lib/neo4j:/data"
@@ -87,7 +87,7 @@ services:
 
     cache:
         container_name: cache
-        image: "alpine:3.5"
+        image: "alpine:3.6"
         command: date
         volumes:
             - "./.cache/composer:/root/.composer"
