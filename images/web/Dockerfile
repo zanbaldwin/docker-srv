@@ -1,4 +1,4 @@
-FROM nginx:1.11.8-alpine
+FROM nginx:1.13.1-alpine
 MAINTAINER Zander Baldwin "hello@zanderbaldwin.com"
 WORKDIR /srv
 EXPOSE 80
