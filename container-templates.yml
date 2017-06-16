@@ -5,7 +5,7 @@ version: '2'
 services:
 
     php:
-        image: "darsyn/php:3.3.14"
+        image: "darsyn/php:3.3.15"
         build: "./images/php"
         restart: unless-stopped
         logging:
@@ -15,7 +15,7 @@ services:
                 max-file: "1"
 
     web:
-        image: "darsyn/web:3.3.14"
+        image: "darsyn/web:3.3.15"
         build: "./images/web"
         restart: unless-stopped
         environment:
@@ -31,7 +31,7 @@ services:
     # be owned by root and 755 on the host machine, otherwise public key
     # authentication will NOT work, and will drop down to password auth instead.
     ssh:
-        image: "darsyn/ssh:3.3.14"
+        image: "darsyn/ssh:3.3.15"
         build: "./images/ssh"
         restart: unless-stopped
         logging:
