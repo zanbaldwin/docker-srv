@@ -1,4 +1,4 @@
-FROM nginx:1.13.1-alpine
+FROM nginx:1.13.5-alpine
 MAINTAINER Zander Baldwin "hello@zanderbaldwin.com"
 WORKDIR /srv
 EXPOSE 80
@@ -12,9 +12,8 @@ RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && chmod +x /sbin/dumb-init
 ENTRYPOINT [ "/sbin/dumb-init", "--" ]
 
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY server.conf /etc/nginx/sites-available/default.conf
-RUN apk add --no-cache gettext
+COPY nginx.conf  /etc/nginx/nginx.conf
+COPY setup.conf  /etc/nginx/conf.d/00-setup.conf
+COPY server.conf /etc/nginx/conf.d/10-default-server.conf
 
-CMD [ "nginx", "-g", "daemon off;" ]
-CMD [ "sh", "-c", "export HOSTNAME=$(hostname -f) && envsubst '$HOSTNAME' < /etc/nginx/sites-available/default.conf > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
+CMD [ "nginx", "-g", "'daemon off;'" ]
