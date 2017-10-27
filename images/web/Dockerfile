@@ -16,4 +16,4 @@ COPY nginx.conf  /etc/nginx/nginx.conf
 COPY setup.conf  /etc/nginx/conf.d/00-setup.conf
 COPY server.conf /etc/nginx/conf.d/10-default-server.conf
 
-CMD [ "nginx", "-g", "'daemon off;'" ]
+CMD [ "nginx", "-g", "daemon off;" ]
