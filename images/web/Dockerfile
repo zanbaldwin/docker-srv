@@ -3,7 +3,7 @@ MAINTAINER Zander Baldwin "hello@zanderbaldwin.com"
 WORKDIR /srv
 EXPOSE 80
 
-RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
+RUN    apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && git clone git://github.com/Yelp/dumb-init.git /tmp/dumb-init \
     && (cd /tmp/dumb-init; git checkout $(git describe --tags); make) \
     && mv /tmp/dumb-init/dumb-init /sbin/dumb-init \
@@ -11,6 +11,9 @@ RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && apk del .build-deps \
     && chmod +x /sbin/dumb-init
 ENTRYPOINT [ "/sbin/dumb-init", "--" ]
+
+RUN    rm -rf /etc/nginx/conf.d \
+    && mkdir /etc/nginx/conf.d
 
 COPY nginx.conf  /etc/nginx/nginx.conf
 COPY setup.conf  /etc/nginx/conf.d/00-setup.conf
