@@ -1,4 +1,5 @@
-FROM nginx:1.13.5-alpine
+ARG NGINX_VERSION="1.13.5-alpine"
+FROM "nginx:${NGINX_VERSION}"
 MAINTAINER Zander Baldwin "hello@zanderbaldwin.com"
 WORKDIR /srv
 EXPOSE 80
@@ -13,7 +14,7 @@ RUN    apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
 ENTRYPOINT [ "/sbin/dumb-init", "--" ]
 
 RUN    rm -rf /etc/nginx/conf.d \
-    && mkdir /etc/nginx/conf.d
+    && mkdir -p /etc/nginx/conf.d
 
 COPY nginx.conf  /etc/nginx/nginx.conf
 COPY setup.conf  /etc/nginx/conf.d/00-setup.conf
