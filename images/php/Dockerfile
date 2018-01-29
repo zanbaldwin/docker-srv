@@ -1,7 +1,9 @@
-FROM php:7.1-fpm-alpine
+ARG PHP_VERSION="7.2-fpm-alpine3.7"
+FROM "php:${PHP_VERSION}"
 MAINTAINER Zander Baldwin "hello@zanderbaldwin.com"
 WORKDIR /srv
 EXPOSE 9000
+EXPOSE 9001
 
 RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && git clone git://github.com/Yelp/dumb-init.git /tmp/dumb-init \
@@ -45,17 +47,21 @@ RUN    apk add --no-cache --virtual .pecl-build-deps $PHPIZE_DEPS \
     && pecl install redis \
     && echo "extension=redis.so" > /usr/local/etc/php/conf.d/pecl-redis.ini \
     # XDebug Extension (disabled by default).
-    && pecl install xdebug \
-    && echo ";zend_extension=xdebug.so" > /usr/local/etc/php/conf.d/pecl-xdebug.ini \
+    && (pecl install xdebug || true) \
+    && (echo ";zend_extension=xdebug.so"; \
+        echo "xdebug.cli_color=1"; \
+        echo "xdebug.file_link_format=\"phpstorm://open?file=%f&line=%l\""; \
+        echo "xdebug.idekey=\"XDEBUG\""; \
+        echo "xdebug.max_nesting_level=512"; \
+        echo "xdebug.profiler_enable_trigger=1"; \
+        echo "xdebug.remote_connect_back=1"; \
+        echo "xdebug.remote_enable=1"; \
+        echo "xdebug.remote_port=9001"; \
+        echo "xdebug.trace_enable_trigger"; \
+        echo "xdebug.var_display_max_data=4096"; \
+        echo "xdebug.var_display_max_depth=7"; \
+    )  > /usr/local/etc/php/conf.d/pecl-xdebug.ini \
     && apk del .pecl-build-deps
-
-# Install Composer
-RUN    curl "https://getcomposer.org/installer" -o "/tmp/composer-setup.php" \
-    && EXPECTED_SIGNATURE="$(curl https://composer.github.io/installer.sig)" \
-       ACTUAL_SIGNATURE="$(php -r "echo hash_file('SHA384', '/tmp/composer-setup.php');")" \
-       [ "${EXPECTED_SIGNATURE}" == "${ACTUAL_SIGNATURE}" ] || (echo  >&2 'ERROR: Invalid Composer installer signature'; exit 1;) \
-    && php "/tmp/composer-setup.php" --install-dir="/usr/local/bin" --filename="composer" \
-    && rm "/tmp/composer-setup.php"
 
 CMD [ "php-fpm", "--allow-to-run-as-root", "--nodaemonize" ]
 
