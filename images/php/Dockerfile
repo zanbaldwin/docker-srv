@@ -47,20 +47,11 @@ RUN    apk add --no-cache --virtual .pecl-build-deps $PHPIZE_DEPS \
     && pecl install redis \
     && echo "extension=redis.so" > /usr/local/etc/php/conf.d/pecl-redis.ini \
     # XDebug Extension (disabled by default).
+    # XDebug lags behind PHP at the moment, so it will fail silently.
+    # Once XDebug releases a version that is compatible with the version of PHP
+    # used in this image, it will automatically be added on build.
     && (pecl install xdebug || true) \
-    && (echo ";zend_extension=xdebug.so"; \
-        echo "xdebug.cli_color=1"; \
-        echo "xdebug.file_link_format=\"phpstorm://open?file=%f&line=%l\""; \
-        echo "xdebug.idekey=\"XDEBUG\""; \
-        echo "xdebug.max_nesting_level=512"; \
-        echo "xdebug.profiler_enable_trigger=1"; \
-        echo "xdebug.remote_connect_back=1"; \
-        echo "xdebug.remote_enable=1"; \
-        echo "xdebug.remote_port=9001"; \
-        echo "xdebug.trace_enable_trigger"; \
-        echo "xdebug.var_display_max_data=4096"; \
-        echo "xdebug.var_display_max_depth=7"; \
-    )  > /usr/local/etc/php/conf.d/pecl-xdebug.ini \
+    && echo ";zend_extension=xdebug.so" > /usr/local/etc/php/conf.d/pecl-xdebug.ini \
     && apk del .pecl-build-deps
 
 CMD [ "php-fpm", "--allow-to-run-as-root", "--nodaemonize" ]
