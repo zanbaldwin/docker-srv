@@ -1,10 +1,6 @@
 ARG PHP_VERSION="7.2-fpm-alpine3.7"
 FROM "php:${PHP_VERSION}"
-MAINTAINER Zander Baldwin "hello@zanderbaldwin.com"
-WORKDIR /srv
-EXPOSE 9000
-EXPOSE 9001
-
+MAINTAINER Zander Baldwin "hello@zanbaldwin.com"
 RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && git clone git://github.com/Yelp/dumb-init.git /tmp/dumb-init \
     && (cd /tmp/dumb-init; git checkout $(git describe --tags); make) \
@@ -14,8 +10,11 @@ RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && chmod +x /sbin/dumb-init
 ENTRYPOINT [ "/sbin/dumb-init", "--" ]
 
-ENV COMPOSER_ALLOW_SUPERUSER 1
+WORKDIR /srv
+EXPOSE 9000
+EXPOSE 9001
 
+ENV COMPOSER_ALLOW_SUPERUSER 1
 COPY php.ini /usr/local/etc/php/php.ini
 
 # Add Extension included in PHP Source Code
