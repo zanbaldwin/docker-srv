@@ -21,12 +21,13 @@ RUN    apk update \
     && apk add bash bash-completion curl nano git openssh ncurses mysql-client \
     && mkdir /var/run/sshd \
     && sed -i -e "s@/bin/ash@/bin/bash@g" /etc/passwd \
+    && sed -i -e "s@#PasswordAuthentication yes@PasswordAuthentication no@g" /etc/ssh/sshd_config \
     && ssh-keygen -A
 
 # Setup Shell Enironment
-RUN    curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o /etc/profile.d/00-git_prompt.sh \
-    && curl https://raw.githubusercontent.com/zanderbaldwin/dotfiles/master/.bash_aliases -o /etc/profile.d/10-bash-aliases.sh \
-    && curl https://raw.githubusercontent.com/zanderbaldwin/dotfiles/master/.bash_prompt -o /etc/profile.d/20-bash-prompt.sh \
+RUN    curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o /etc/profile.d/00-git-prompt.sh \
+    && curl https://raw.githubusercontent.com/zanbaldwin/dotfiles/master/.bash_aliases -o /etc/profile.d/10-bash-aliases.sh \
+    && curl https://raw.githubusercontent.com/zanbaldwin/dotfiles/master/.bash_prompt -o /etc/profile.d/20-bash-prompt.sh \
     && echo "cd /srv" > /etc/profile.d/30-srv-directory.sh \
     && mkdir /root/.ssh && touch /root/.ssh/authorized_keys
 
@@ -47,6 +48,6 @@ RUN    apk add php7 \
     && if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]; then \
         exit 1; \
     fi; \
-    php /tmp/composer-setup.php --install-dir="/usr/local/bin" --filename="composer"
+    php /tmp/composer-setup.php --install-dir="/bin" --filename="composer"
 
 CMD [ "/usr/sbin/sshd", "-D" ]
