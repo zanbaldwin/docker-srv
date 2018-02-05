@@ -1,6 +1,6 @@
 ARG NGINX_VERSION="1.13.5-alpine"
 FROM "nginx:${NGINX_VERSION}"
-MAINTAINER Zander Baldwin "hello@zanbaldwin.com"
+MAINTAINER Zan Baldwin "hello@zanbaldwin.com"
 RUN    apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && git clone git://github.com/Yelp/dumb-init.git /tmp/dumb-init \
     && (cd /tmp/dumb-init; git checkout $(git describe --tags); make) \

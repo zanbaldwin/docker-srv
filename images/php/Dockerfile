@@ -1,6 +1,6 @@
 ARG PHP_VERSION="7.2-fpm-alpine3.7"
 FROM "php:${PHP_VERSION}"
-MAINTAINER Zander Baldwin "hello@zanbaldwin.com"
+MAINTAINER Zan Baldwin "hello@zanbaldwin.com"
 RUN apk add --no-cache --virtual .build-deps bash gcc git libc-dev make \
     && git clone git://github.com/Yelp/dumb-init.git /tmp/dumb-init \
     && (cd /tmp/dumb-init; git checkout $(git describe --tags); make) \

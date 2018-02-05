@@ -1,5 +1,5 @@
-FROM alpine:3.6
-MAINTAINER Zander Baldwin <hello@zanderbaldwin.com>
+FROM alpine:3.7
+MAINTAINER Zan Baldwin <hello@zanbaldwin.com>
 WORKDIR /srv
 EXPOSE 22
 
