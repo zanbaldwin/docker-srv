@@ -17,22 +17,26 @@ EXPOSE 9001
 ENV COMPOSER_ALLOW_SUPERUSER 1
 COPY php.ini /usr/local/etc/php/php.ini
 
+ARG MEMORY_LIMIT="256M"
+RUN echo "memory_limit = ${MEMORY_LIMIT}" >> /usr/local/etc/php/php.ini
+
 # Add Extension included in PHP Source Code
 RUN sed -i -e 's/www-data/root/g' /usr/local/etc/php-fpm.d/www.conf \
     && apk add --no-cache --upgrade --virtual .extension-build-deps \
         libpng-dev      libjpeg-turbo-dev   libwebp-dev     giflib-dev \
         gmp-dev         icu-dev             libxslt-dev     gettext-dev \
-        libxml2-dev \
+        libxml2-dev     libmcrypt-dev \
     && apk add --no-cache --upgrade --virtual .extension-runtime-deps \
         libpng          libjpeg-turbo       libwebp         giflib \
         gmp             icu                 libxslt         ssmtp \
-        openssl         gettext \
+        openssl         gettext             libmcrypt \
     && echo 'sendmail_path="/usr/sbin/ssmtp -t"' > /usr/local/etc/php/conf.d/mail.ini \
     && echo 'FromLineOverride=YES' >> /etc/ssmtp/ssmtp.conf \
     && docker-php-ext-configure gd --with-jpeg-dir=/usr \
     && docker-php-ext-install \
         bcmath      dba         exif        gd          gettext     gmp     intl \
         mysqli      opcache     pcntl       pdo_mysql   sockets     xsl     zip \
+        mcrypt \
     && apk del .extension-build-deps
 
 # Add Extensions from PECL
@@ -53,6 +57,14 @@ RUN    apk add --no-cache --upgrade --virtual .pecl-build-deps $PHPIZE_DEPS \
     && (pecl install xdebug || true) \
     && echo ";zend_extension=xdebug.so" > /usr/local/etc/php/conf.d/pecl-xdebug.ini \
     && apk del .pecl-build-deps
+
+ARG ENABLE_MCRYPT=0
+RUN if [ ${ENABLE_MCRYPT} -eq 1]; then \
+        curl -o /tmp/mcrypt.tgz https://pecl.php.net/get/mcrypt-1.0.1.tgz; \
+        cd /tmp; tar vxf mcrypt.tgz; \
+        mv /tmp/mcrypt /usr/src/php/ext/mcrypt; \
+        docker-php-ext-install mcrypt; \
+    fi
 
 # Add Command-line Tools (remove this RUN command if you want leaner builds for production):
 ## Git: used by Composer for loading/reading packages in Git repositories.
