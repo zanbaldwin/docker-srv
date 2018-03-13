@@ -29,14 +29,14 @@ RUN sed -i -e 's/www-data/root/g' /usr/local/etc/php-fpm.d/www.conf \
     && apk add --no-cache --upgrade --virtual .extension-runtime-deps \
         libpng          libjpeg-turbo       libwebp         giflib \
         gmp             icu                 libxslt         ssmtp \
-        openssl         gettext             libmcrypt \
+        openssl         gettext             libmcrypt       libxml2 \
     && echo 'sendmail_path="/usr/sbin/ssmtp -t"' > /usr/local/etc/php/conf.d/mail.ini \
     && echo 'FromLineOverride=YES' >> /etc/ssmtp/ssmtp.conf \
     && docker-php-ext-configure gd --with-jpeg-dir=/usr \
     && docker-php-ext-install \
         bcmath      dba         exif        gd          gettext     gmp     intl \
-        mysqli      opcache     pcntl       pdo_mysql   sockets     xsl     zip \
-        mcrypt \
+        mysqli      opcache     pcntl       pdo_mysql   soap        sockets xsl \
+        zip \
     && apk del .extension-build-deps
 
 # Add Extensions from PECL
@@ -62,8 +62,10 @@ ARG ENABLE_MCRYPT=0
 RUN if [ ${ENABLE_MCRYPT} -eq 1]; then \
         curl -o /tmp/mcrypt.tgz https://pecl.php.net/get/mcrypt-1.0.1.tgz; \
         cd /tmp; tar vxf mcrypt.tgz; \
+        rm /tmp/mcrypt.tgz; \
         mv /tmp/mcrypt /usr/src/php/ext/mcrypt; \
         docker-php-ext-install mcrypt; \
+        rm -rf /usr/src/php/ext/mcrypt; \
     fi
 
 # Add Command-line Tools (remove this RUN command if you want leaner builds for production):
