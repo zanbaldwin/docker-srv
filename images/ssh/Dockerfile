@@ -21,7 +21,7 @@ RUN    apk update \
     && apk add bash bash-completion curl nano git openssh ncurses mysql-client \
     && mkdir /var/run/sshd \
     && sed -i -e "s@/bin/ash@/bin/bash@g" /etc/passwd \
-    && sed -i -e "s@#PasswordAuthentication yes@PasswordAuthentication no@g" /etc/ssh/sshd_config \
+    && sed -i -e "s@#\?PasswordAuthentication .*\$@PasswordAuthentication no@g" /etc/ssh/sshd_config \
     && ssh-keygen -A
 
 # Setup Shell Enironment
@@ -29,7 +29,8 @@ RUN    curl https://raw.githubusercontent.com/git/git/master/contrib/completion/
     && curl https://raw.githubusercontent.com/zanbaldwin/dotfiles/master/.bash_aliases -o /etc/profile.d/10-bash-aliases.sh \
     && curl https://raw.githubusercontent.com/zanbaldwin/dotfiles/master/.bash_prompt -o /etc/profile.d/20-bash-prompt.sh \
     && echo "cd /srv" > /etc/profile.d/30-srv-directory.sh \
-    && mkdir /root/.ssh && touch /root/.ssh/authorized_keys
+    && mkdir /root/.ssh && chmod 0755 /root/.ssh \
+    && touch /root/.ssh/authorized_keys && chmod 0600 /root/.ssh/authorized_keys
 
 # Install Composer (including a wide variety of libraries that most packages would need)
 RUN    apk add php7 \
@@ -50,4 +51,4 @@ RUN    apk add php7 \
     fi; \
     php /tmp/composer-setup.php --install-dir="/bin" --filename="composer"
 
-CMD [ "/usr/sbin/sshd", "-D" ]
+CMD [ "/usr/sbin/sshd", "-e", "-D" ]
